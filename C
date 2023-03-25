@@ -1,0 +1,356 @@
+% % reading the image
+I=imread('image1.bmp');
+% % taking each color component seperately
+imbw = rgb2gray(I);
+imr=I(:,:,1);
+imwrite(imr,'Red_component.bmp');
+img=I(:,:,2);
+imwrite(img,'Green_component.bmp');
+imb=I(:,:,3);
+imwrite(imb,'Blue_component.bmp');
+[nx,ny] = size(imbw) ;
+%% to split into kx*ky blocks 
+kx = 136 ; ky = 241;
+%% Chnage dimensions of image so that exactly divisible 
+nx0 = nx+(kx-mod(nx,kx)) ;
+ny0 = ny+(ky-mod(ny,ky)) ;
+%%
+I1 = uint8(zeros(nx0,ny0)) ;
+I1(1:nx,1:ny) =imr ;
+I2 = uint8(zeros(nx0,ny0)) ;
+I2(1:nx,1:ny)=img;
+I3 = uint8(zeros(nx0,ny0)) ;
+I3(1:nx,1:ny)=imb;
+%% Divide into blocks 
+kx0 = nx0/kx ; % rows in block
+ky0 = ny0/ky ; % columns in block 
+%% resetting dimesions
+R1= mat2cell(I1, repmat(kx0,[1 size(I1,1)/kx0]), 
+repmat(ky0,[1 size(I1,2)/ky0]));
+G1= mat2cell(I2, repmat(kx0,[1 size(I2,1)/kx0]), 
+repmat(ky0,[1 size(I2,2)/ky0]));
+B1= mat2cell(I3, repmat(kx0,[1 size(I1,1)/kx0]), 
+repmat(ky0,[1 size(I3,2)/ky0]));
+%% image compression m=1
+for i=1:kx
+ for j=1:ky
+ R1{i,j}=dct2(R1{i,j});
+ G1{i,j}=dct2(G1{i,j});
+ B1{i,j}=dct2(B1{i,j});
+ R1{i,j}=idct2(R1{i,j});
+ R1{i,j}=R1{i,j}(1,1);
+ G1{i,j}=idct2(G1{i,j});
+ G1{i,j}=G1{i,j}(1,1);
+ B1{i,j}=idct2(B1{i,j});
+ B1{i,j}=B1{i,j}(1,1);
+ end
+end
+%% getting the final image
+R1=cell2mat(R1);
+R1=R1(1:135,1:240);
+R1=rescale(R1);
+G1=cell2mat(G1);
+G1=G1(1:135,1:240);
+G1=rescale(G1);
+B1=cell2mat(B1);
+B1=B1(1:135,1:240);
+B1=rescale(B1);
+imwrite(R1,'compressed_red1.bmp');
+imwrite(G1,'compressed_green1.bmp'); 
+imwrite(B1,'compressed_blue1.bmp');
+compimg1=cat(3,R1,G1,B1);
+imwrite(compimg1,'compimg1.bmp');
+%% resetting dimensions
+R1= mat2cell(I1, repmat(kx0,[1 size(I1,1)/kx0]), 
+repmat(ky0,[1 size(I1,2)/ky0]));
+G1= mat2cell(I2, repmat(kx0,[1 size(I2,1)/kx0]), 
+repmat(ky0,[1 size(I2,2)/ky0]));
+B1= mat2cell(I3, repmat(kx0,[1 size(I1,1)/kx0]), 
+repmat(ky0,[1 size(I3,2)/ky0]));
+%% image compression m=2
+for i=1:kx
+ for j=1:ky
+ R1{i,j}=dct2(R1{i,j});
+ G1{i,j}=dct2(G1{i,j});
+ B1{i,j}=dct2(B1{i,j});
+ R1{i,j}=idct2(R1{i,j});
+ R1{i,j}=R1{i,j}(1:2,1:2);
+ G1{i,j}=idct2(G1{i,j});
+ G1{i,j}=G1{i,j}(1:2,1:2);
+ B1{i,j}=idct2(B1{i,j});
+ B1{i,j}=B1{i,j}(1:2,1:2);
+ end
+end
+%% getting the final image
+R1=cell2mat(R1);
+R1=R1(1:270,1:480);
+R1=rescale(R1);
+G1=cell2mat(G1);
+G1=G1(1:270,1:480);
+G1=rescale(G1);
+B1=cell2mat(B1);
+B1=B1(1:270,1:480);
+B1=rescale(B1);
+imwrite(R1,'compressed_red2.bmp');
+imwrite(G1,'compressed_green2.bmp'); 
+imwrite(B1,'compressed_blue2.bmp');
+compimg2=cat(3,R1,G1,B1);
+imwrite(compimg2,'compimg2.bmp');
+%% resetting dimensions
+R1= mat2cell(I1, repmat(kx0,[1 size(I1,1)/kx0]), 
+repmat(ky0,[1 size(I1,2)/ky0]));
+G1= mat2cell(I2, repmat(kx0,[1 size(I2,1)/kx0]), 
+repmat(ky0,[1 size(I2,2)/ky0]));
+B1= mat2cell(I3, repmat(kx0,[1 size(I1,1)/kx0]), 
+repmat(ky0,[1 size(I3,2)/ky0]));
+%% image compression m =3
+pros=zeros(8);
+for i=1:kx
+ for j=1:ky
+ R1{i,j}=dct2(R1{i,j});
+ G1{i,j}=dct2(G1{i,j});
+ B1{i,j}=dct2(B1{i,j});
+ R1{i,j}=idct2(R1{i,j});
+ R1{i,j}=R1{i,j}(1:3,1:3);
+ G1{i,j}=idct2(G1{i,j});
+ G1{i,j}=G1{i,j}(1:3,1:3);
+ B1{i,j}=idct2(B1{i,j});
+ B1{i,j}=B1{i,j}(1:3,1:3);
+ end
+end
+%% getting the final image
+R1=cell2mat(R1);
+R1=R1(1:405,1:720);
+R1=rescale(R1);
+G1=cell2mat(G1);
+G1=G1(1:405,1:720);
+G1=rescale(G1);
+B1=cell2mat(B1);
+B1=B1(1:405,1:720);
+B1=rescale(B1);
+imwrite(R1,'compressed_red3.bmp');
+imwrite(G1,'compressed_green3.bmp'); 
+imwrite(B1,'compressed_blue3.bmp');
+compimg3=cat(3,R1,G1,B1);
+imwrite(compimg3,'compimg3.bmp');
+%%resetting dimensions
+R1= mat2cell(I1, repmat(kx0,[1 size(I1,1)/kx0]), 
+repmat(ky0,[1 size(I1,2)/ky0]));
+G1= mat2cell(I2, repmat(kx0,[1 size(I2,1)/kx0]), 
+repmat(ky0,[1 size(I2,2)/ky0]));
+B1= mat2cell(I3, repmat(kx0,[1 size(I1,1)/kx0]), 
+repmat(ky0,[1 size(I3,2)/ky0]));
+%% image compressionm=4
+for i=1:kx
+ for j=1:ky
+ R1{i,j}=dct2(R1{i,j});
+ G1{i,j}=dct2(G1{i,j});
+ B1{i,j}=dct2(B1{i,j});
+ R1{i,j}=idct2(R1{i,j});
+ R1{i,j}=R1{i,j}(1:4,1:4);
+ G1{i,j}=idct2(G1{i,j});
+ G1{i,j}=G1{i,j}(1:4,1:4);
+ B1{i,j}=idct2(B1{i,j});
+ B1{i,j}=B1{i,j}(1:4,1:4);
+ end
+end
+%% getting the final compressed image
+R1=cell2mat(R1);
+R1=R1(1:540,1:960);
+R1=rescale(R1);
+G1=cell2mat(G1);
+G1=G1(1:540,1:960);
+G1=rescale(G1);
+B1=cell2mat(B1);
+B1=B1(1:540,1:960);
+B1=rescale(B1);
+imwrite(R1,'compressed_red4.bmp');
+imwrite(G1,'compressed_green4.bmp'); 
+imwrite(B1,'compressed_blue4.bmp');
+compimg4=cat(3,R1,G1,B1);
+imwrite(compimg4,'compimg4.bmp');
+%% getting the final decompressed image
+% % converting to double for easier calculations
+imr = im2double(imr);
+img = im2double(img);
+imb = im2double(imb);
+m=1;
+compressionmatrix=zeros(8);
+compressionmatrix(1:m,1:m)=1;
+% % defining dct transformation matrix
+dcmat = dctmtx(8);
+% % transformation functions
+dctFun = @(block_struct) dcmat * block_struct.data * 
+dcmat';
+idctFun = @(block_struct) dcmat' * block_struct.data * 
+dcmat;
+% % applying functions to the image components where m=1
+R = blockproc(imr,[8 8],dctFun);
+dctR = blockproc(R,[8 8],@(block_struct) compressionmatrix 
+.* block_struct.data);
+compR = blockproc(dctR,[8 8],idctFun);
+G = blockproc(img,[8 8],dctFun);
+dctG = blockproc(G,[8 8],@(block_struct) compressionmatrix 
+.* block_struct.data);
+compG = blockproc(dctG,[8 8],idctFun);
+B = blockproc(imb,[8 8],dctFun);
+dctB = blockproc(B,[8 8],@(block_struct) compressionmatrix 
+.* block_struct.data);
+compB = blockproc(dctB,[8 8],idctFun);
+imwrite(compR,'decompressed_red1.bmp');
+imwrite(compG,'decompressed_green1.bmp');
+imwrite(compB,'decompressed_blue1.bmp');
+% % calculating the psnr 
+imr= uint8(255*imr);
+imb= uint8(255*imb);
+img= uint8(255*img);
+compR=uint8(255*compR);
+compG=uint8(255*compG);
+compB=uint8(255*compB);
+% % outputing the psnr
+NoiseRatioRed1=psnr(compR,imr)
+NoiseRatioGreen1=psnr(compG,img)
+NoiseRatioBlue1=psnr(compB,imb)
+% % compining the image components
+img1=cat(3,compR,compG,compB);
+imshow(img1);
+peaksnrFull1=psnr(img1,I)
+% % applying the function where m=2
+m=2;
+compressionmatrix=zeros(8);
+compressionmatrix(1:m,1:m)=1;
+imr = im2double(imr);
+img = im2double(img);
+imb = im2double(imb);
+% % applying functions to the image components
+R2 = blockproc(imr,[8 8],dctFun);
+dctR2 = blockproc(R2,[8 8],@(block_struct) 
+compressionmatrix .* block_struct.data);
+compR2 = blockproc(dctR2,[8 8],idctFun);
+G2 = blockproc(img,[8 8],dctFun);
+dctG2 = blockproc(G2,[8 8],@(block_struct) 
+compressionmatrix .* block_struct.data);
+compG2 = blockproc(dctG2,[8 8],idctFun);
+B2 = blockproc(imb,[8 8],dctFun);
+dctB2 = blockproc(B2,[8 8],@(block_struct) 
+compressionmatrix .* block_struct.data);
+compB2 = blockproc(dctB2,[8 8],idctFun);
+imwrite(compR2,'decompressed_red2.bmp');
+imwrite(compG2,'decompressed_green2.bmp');
+imwrite(compB2,'decompressed_blue2.bmp');
+% % calculating the psnr 
+imr= uint8(255*imr);
+imb= uint8(255*imb);
+img= uint8(255*img);
+compR2=uint8(255*compR2);
+compG2=uint8(255*compG2);
+compB2=uint8(255*compB2);
+% % outputing the psnr
+NoiseRatioRed2=psnr(compR2,imr)
+NoiseRatioGreen2=psnr(compG2,img)
+NoiseRatioBlue2=psnr(compB2,imb)
+% % compining the image components
+img2=cat(3,compR2,compG2,compB2);
+imshow(img2);
+peaksnrFull2=psnr(img2,I)
+% % applying function where m=3
+m=3;
+compressionmatrix=zeros(8);
+compressionmatrix(1:m,1:m)=1;
+imr = im2double(imr);
+img = im2double(img);
+imb = im2double(imb);
+% % applying functions to the image components
+R3 = blockproc(imr,[8 8],dctFun);
+dctR3 = blockproc(R3,[8 8],@(block_struct) 
+compressionmatrix .* block_struct.data);
+compR3 = blockproc(dctR3,[8 8],idctFun);
+G3 = blockproc(img,[8 8],dctFun);
+dctG3 = blockproc(G3,[8 8],@(block_struct) 
+compressionmatrix .* block_struct.data);
+compG3 = blockproc(dctG3,[8 8],idctFun);
+B3 = blockproc(imb,[8 8],dctFun);
+dctB3 = blockproc(B3,[8 8],@(block_struct) 
+compressionmatrix .* block_struct.data);
+compB3 = blockproc(dctB3,[8 8],idctFun);
+imwrite(compR3,'decompressed_red3.bmp');
+imwrite(compG3,'decompressed_green3.bmp');
+imwrite(compB3,'decompressed_blue3.bmp');
+% % calculating the psnr 
+imr= uint8(255*imr);
+imb= uint8(255*imb);
+img= uint8(255*img);
+compR3=uint8(255*compR3);
+compG3=uint8(255*compG3);
+compB3=uint8(255*compB3);
+% % outputing the psnr
+NoiseRatioRed3=psnr(compR3,imr)
+NoiseRatioGreen3=psnr(compG3,img)
+NoiseRatioBlue3=psnr(compB3,imb)
+% % compining the image components
+img3=cat(3,compR3,compG3,compB3);
+imshow(img3);
+peaksnrFull3=psnr(img3,I)
+% % applying the function where m=4
+m=4;
+compressionmatrix=zeros(8);
+compressionmatrix(1:m,1:m)=1;
+imr = im2double(imr);
+img = im2double(img);
+imb = im2double(imb);
+% % applying functions to the image components
+R4 = blockproc(imr,[8 8],dctFun);
+dctR4 = blockproc(R4,[8 8],@(block_struct) 
+compressionmatrix .* block_struct.data);
+compR4 = blockproc(dctR4,[8 8],idctFun);
+G4 = blockproc(img,[8 8],dctFun);
+dctG4 = blockproc(G4,[8 8],@(block_struct) 
+compressionmatrix .* block_struct.data);
+compG4 = blockproc(dctG4,[8 8],idctFun);
+B4 = blockproc(imb,[8 8],dctFun);
+dctB4 = blockproc(B4,[8 8],@(block_struct) 
+compressionmatrix .* block_struct.data);
+compB4 = blockproc(dctB4,[8 8],idctFun);
+imwrite(compR4,'decompressed_red4.bmp');
+imwrite(compG4,'decompressed_green4.bmp');
+imwrite(compB4,'decompressed_blue4.bmp');
+% % calculating the psnr 
+imr= uint8(255*imr);
+imb= uint8(255*imb);
+img= uint8(255*img);
+compR4=uint8(255*compR4);
+compG4=uint8(255*compG4);
+compB4=uint8(255*compB4);
+% % outputing the psnr
+NoiseRatioRed4=psnr(compR4,imr)
+NoiseRatioGreen4=psnr(compG4,img)
+NoiseRatioBlue4=psnr(compB4,imb)
+m=[1,2,3,4];
+PSNR_red=[NoiseRatioRed1,NoiseRatioRed2,NoiseRatioRed3,Nois
+eRatioRed4]; 
+PSNR_green=[NoiseRatioGreen1,NoiseRatioGreen2,NoiseRatioGre
+en3,NoiseRatioGreen4];
+PSNR_blue=[NoiseRatioBlue1,NoiseRatioBlue2,NoiseRatioBlue3,
+NoiseRatioBlue4];
+figure;
+stem(m,PSNR_red)
+xlabel('m')
+ylabel('PSNR for red ')
+figure;
+stem(m,PSNR_green)
+xlabel('m')
+ylabel('PSNR for green ')
+figure;
+stem(m,PSNR_blue)
+xlabel('m')
+ylabel('PSNR for red ')
+% % compining the image components
+img4=cat(3,compR4,compG4,compB4);
+imshow(img4);
+peaksnrFull4=psnr(img4,I)
+PSNR_final_image=[peaksnrFull1,peaksnrFull2,peaksnrFull3,pe
+aksnrFull4];
+figure;
+stem(m,PSNR_final_image)
+xlabel('m')
+ylabel('PSNR for final image ')
